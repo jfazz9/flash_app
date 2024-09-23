@@ -1,0 +1,29 @@
+<!-- cards/templates/cards/card_list.html -->
+{% extends "cards/base.html" %}
+{% load humanize %}
+
+{% block content %}
+
+    <h2>
+        All Cards
+    </h2>
+
+    <!-- Add buttons to create cards or topics -->
+    <a href="{% url 'card-create' %}" role="button">
+        ✨ Create New Card
+    </a>
+    <a href="{% url 'topic-list' %}" role="button">
+        ➕ Add a Topic
+    </a>
+
+    <!-- Display the filtered card list -->
+    {% for card in cards %}
+        {% ifchanged %}
+            <h3>🗃 {{ card.box | ordinal }} Box</h3>
+        {% endifchanged %}
+        {% include "cards/card.html" %}
+    {% empty %}
+        <p>No cards available for this topic.</p>
+    {% endfor %}
+
+{% endblock content %}

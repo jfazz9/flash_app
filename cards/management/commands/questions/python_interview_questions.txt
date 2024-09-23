@@ -1,0 +1,30 @@
+
+1. What is the difference between deepcopy and shallowcopy in Python?
+- A shallow copy copies references to objects, while a deep copy creates a complete copy of the object and everything it references. Deep copies don't share objects, but shallow copies do.
+
+2. What are Python decorators, and how are they used?
+- Decorators modify the behavior of functions or methods. They're applied using @decorator_name and can be used for tasks like logging, caching, etc.
+
+3. What are list comprehensions, and when should they be used?
+- List comprehensions are a compact way to create lists from iterables in a single line of code. They're used for simplicity but should be avoided in complex scenarios.
+
+4. Explain the Global Interpreter Lock (GIL) in Python.
+- The GIL ensures only one thread executes Python bytecode at a time, limiting performance for CPU-bound tasks in multi-threaded programs but not affecting I/O-bound programs.
+
+5. What are Python’s built-in types for sequences?
+- Built-in sequence types include lists (list), tuples (tuple), strings (str), ranges (range), bytes (bytes), and byte arrays (bytearray).
+
+6. What is the difference between == and is in Python?
+- '==' compares if values are the same, while 'is' checks if two variables point to the same object in memory.
+
+7. What are Python generators, and how do they differ from normal functions?
+- Generators return iterators and use 'yield' to lazily produce values one at a time, making them more memory-efficient than normal functions.
+
+8. How does Python handle memory management?
+- Python manages memory using a private heap space and handles automatic garbage collection to free up memory when objects are no longer in use.
+
+9. What is the purpose of self in Python class methods?
+- 'self' refers to the instance of the class and allows access to instance variables and methods. It must be the first parameter in instance methods.
+
+10. What are the key differences between Python 2 and Python 3?
+- Key differences include print as a function, integer division returning float in Python 3, and strings being Unicode by default in Python 3.

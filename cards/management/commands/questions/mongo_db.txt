@@ -1,0 +1,20 @@
+1. What are the different types of indexes supported by MongoDB?
+- MongoDB supports several types of indexes, including single field indexes, compound indexes, multi-key indexes, text indexes, and geo-spatial indexes.0
+1. How do you backup a MongoDB database?
+- There are several ways to backup a MongoDB database, including using the mongodump command to create a binary dump of the data, using the MongoDB Cloud Backup service, or using a third-party backup solution.
+1. How do you troubleshoot slow queries in MongoDB?
+- To troubleshoot slow queries in MongoDB, you can use the explain() method to analyze query performance and identify bottlenecks. You can also use the profiler to log slow queries and analyze their performance.
+1. What are the steps to create a replica set in MongoDB?
+- To create a replica set in MongoDB, you need to start by launching multiple MongoDB instances on separate servers or virtual machines. You then initiate the replica set using the rs.initiate() command, add the other nodes using the rs.add() command, and configure the replica set members and their priorities using the rs.conf() command.
+1. What is sharding in MongoDB and how does it work?
+- Sharding in MongoDB is a method of horizontal scaling that involves distributing data across multiple servers or shards. Each shard contains a subset of the data, and MongoDB uses a sharding key to determine which shard a document belongs to. This allows MongoDB to handle larger data sets than would be possible with a single server.
+1. How do you upgrade a MongoDB instance to a newer version?
+- To upgrade a MongoDB instance to a newer version, you can use the mongodump and mongorestore utilities to backup and restore the data to the new instance, or you can perform an in-place upgrade using the package manager for your operating system.
+1. What is the purpose of the balancer in MongoDB?
+- The balancer in MongoDB is responsible for moving data between shards to maintain an even distribution of data across the cluster. It operates automatically, and can be configured using the balancer-related commands.
+1. How do you configure authentication in MongoDB?
+- To configure authentication in MongoDB, you need to enable authentication in the configuration file, create a user administrator account, and create user accounts with the necessary privileges for each database.
+1. What is a capped collection in MongoDB?
+- A capped collection in MongoDB is a fixed-size collection that automatically overwrites the oldest documents when it reaches its maximum size. It is useful for storing data that has a limited lifetime or for creating a log-like collection.
+1. How do you configure MongoDB to use SSL encryption for communication?
+- To configure MongoDB to use SSL encryption for communication, you need to generate an SSL certificate and key, configure the mongod and mongos instances to use SSL, and configure the clients to use SSL as well. This can be done using the relevant configuration file options or command-line options.

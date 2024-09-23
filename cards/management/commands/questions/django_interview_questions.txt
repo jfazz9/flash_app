@@ -1,0 +1,30 @@
+
+1. What is Django, and what are its key features?
+- Django is a high-level Python web framework that promotes rapid development and clean design. Key features include ORM (Object-Relational Mapping), admin panel, authentication, scalability, and security.
+
+2. What is the purpose of settings.py in Django?
+- settings.py contains configurations for the Django project, such as database settings, installed apps, middleware, static files, templates, and security configurations.
+
+3. Explain the Django ORM and its purpose.
+- Django ORM allows you to interact with the database using Python objects instead of SQL queries. It automatically handles table creation, querying, and relationships between models.
+
+4. What are Django middleware, and how do they work?
+- Middleware is a framework of hooks that process requests and responses. They are executed in a defined order and handle tasks like session management, security, and user authentication.
+
+5. What is the Django admin interface?
+- Django provides a built-in admin interface that automatically generates a web-based UI to manage the data in your models. It's customizable and can be used for quick administration tasks.
+
+6. How do you create a model in Django?
+- A Django model is created as a Python class inherited from models.Model. Each attribute defines a database field, and Django automatically generates SQL based on the model.
+
+7. What is the use of urls.py in Django?
+- urls.py contains URL patterns that map URLs to corresponding views. It acts as a routing system, directing user requests to the correct view function or class-based view.
+
+8. What is the difference between GET and POST in Django views?
+- GET is used for retrieving data, usually via URL parameters, and doesn't modify server state. POST is used for submitting data to the server, often via forms, and can alter server state.
+
+9. What are class-based views (CBVs) in Django?
+- CBVs provide an object-oriented way to define views. They offer reusable, built-in methods like ListView and DetailView for common patterns, providing more flexibility than function-based views.
+
+10. How does Django handle static and media files?
+- Django serves static files (CSS, JS) during development using STATIC_URL and STATICFILES_DIRS. Media files (uploads) are handled via MEDIA_URL and MEDIA_ROOT, and are typically managed by a web server in production.

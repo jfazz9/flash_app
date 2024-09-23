@@ -1,0 +1,20 @@
+{% extends "cards/base.html" %}
+
+{% block content %}
+    <h2>Topics</h2>
+    
+    <!-- List of current topics -->
+    <ul>
+        {% for topic in topics %}
+            <li>{{ topic.name }}</li>
+        {% endfor %}
+    </ul>
+
+    <!-- Form to add a new topic -->
+    <h3>Add a New Topic</h3>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}  <!-- Renders the form fields -->
+        <button type="submit">➕ Add Topic</button>
+    </form>
+{% endblock %}
