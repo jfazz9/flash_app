@@ -1,0 +1,29 @@
+<!-- cards/templates/cards/card.html -->
+
+<article>
+    <p>Topic: <strong>{{ card.topic.name }}</strong></p> 
+    <h4>{{ card.question }}</h4>
+    {% if not check_card %}
+        <p>{{ card.answer }}</p>
+        <hr>
+        <a href="{% url 'card-update' card.id %}" role="button">
+            ✏️ Edit Card
+        </a>
+    {% else %}
+        <!-- Input box for the user to enter their answer -->
+        <form method="post" action="{% url 'submit-answer' card.id %}">
+            {% csrf_token %}
+            <label for="user-answer">Your answer:</label><br>
+            <input type="text" id="user-answer" name="user_answer" placeholder="Type your answer here..." style="width:100%; padding:10px; margin-top:10px;">
+            <br><br>
+            <button type="submit">Submit Answer</button>
+        </form>
+        <details>
+            <summary>Reveal Answer</summary>
+            <p>{{ card.answer }}</p>
+        </details>
+        <hr>
+        {% include "cards/card_check_form.html" with solved=True %}
+        {% include "cards/card_check_form.html" with solved=False %}
+    {% endif %}
+</article>

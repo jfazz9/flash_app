@@ -1,0 +1,6 @@
+[
+    {"model": "cards.topic", "fields": {"name": "Estate Agent"}},
+    {"model": "cards.topic", "fields": {"name": "Cloud Computing"}},
+    {"model": "cards.topic", "fields": {"name": "Data Structures"}},
+    {"model": "cards.topic", "fields": {"name": "Mongo DB"}}
+]

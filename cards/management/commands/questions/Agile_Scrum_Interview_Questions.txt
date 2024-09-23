@@ -1,0 +1,83 @@
+
+1. Can you explain the Agile methodology and its core principles?
+- Agile is an iterative approach to project management and software development that helps teams deliver value to their customers faster and with fewer headaches. The core principles of Agile, as outlined in the Agile Manifesto, include:
+  - **Individuals and interactions** over processes and tools
+  - **Working software** over comprehensive documentation
+  - **Customer collaboration** over contract negotiation
+  - **Responding to change** over following a plan
+These principles emphasize flexibility, collaboration, and customer satisfaction.
+
+2. What are the key differences between Agile and the traditional Waterfall approach?
+- The key differences between Agile and Waterfall include:
+  - **Flexibility:** Agile allows for changes and iterations throughout the project, whereas Waterfall is linear and changes are difficult to implement once a phase is completed.
+  - **Customer Involvement:** Agile promotes continuous customer involvement and feedback, while Waterfall typically involves the customer mainly at the beginning and end of the project.
+  - **Delivery:** Agile delivers work in small, incremental releases, enabling faster delivery of value. Waterfall delivers the final product only after all phases are completed.
+  - **Risk Management:** Agile identifies and addresses risks early and continuously, whereas Waterfall may encounter risks later in the project lifecycle.
+
+3. Describe the roles and responsibilities of a Scrum Master within a Scrum team?
+- The Scrum Master acts as a facilitator and coach for the Scrum team. Their responsibilities include:
+  - **Facilitating Scrum ceremonies:** Ensuring that meetings like Daily Stand-ups, Sprint Planning, Reviews, and Retrospectives are effective.
+  - **Removing impediments:** Helping the team overcome obstacles that hinder their progress.
+  - **Coaching the team:** Guiding the team in Agile practices and ensuring they adhere to Scrum principles.
+  - **Protecting the team:** Shielding the team from external distractions and interruptions.
+  - **Fostering collaboration:** Encouraging effective communication and collaboration within the team and with stakeholders.
+
+4. What is a Sprint in Scrum, and how do you plan and execute one?
+- A Sprint is a time-boxed iteration, typically lasting 2-4 weeks, during which the Scrum team works to complete a set of predefined tasks from the Product Backlog. To plan and execute a Sprint:
+  - **Sprint Planning:** The team selects items from the Product Backlog to commit to for the Sprint based on priority and capacity.
+  - **Creating a Sprint Backlog:** The selected items are broken down into tasks and organized in the Sprint Backlog.
+  - **Execution:** The team works on the tasks, holding Daily Stand-up meetings to track progress and address any issues.
+  - **Review and Retrospective:** At the end of the Sprint, the team reviews the completed work with stakeholders and holds a retrospective to discuss what went well and what can be improved for the next Sprint.
+
+5. How do you prioritize tasks in a Scrum backlog?
+- Tasks in a Scrum backlog are prioritized based on several factors:
+  - **Business Value:** Items that deliver the most value to the customer or business are prioritized higher.
+  - **Urgency:** Tasks that are time-sensitive or have impending deadlines are given priority.
+  - **Dependencies:** Tasks that are prerequisites for other items are prioritized to avoid bottlenecks.
+  - **Risk and Complexity:** Items that pose higher risks or are more complex may be prioritized to address potential issues early.
+  - **Stakeholder Input:** Feedback from stakeholders and customers can influence the prioritization to ensure alignment with their needs.
+
+6. Can you explain what a User Story is and how it’s used in Agile development?
+- A User Story is a short, simple description of a feature or functionality from the perspective of the end user. It typically follows the format: "As a [type of user], I want [an action] so that [a benefit]." User Stories are used to:
+  - **Capture Requirements:** They help in understanding what the user needs and why.
+  - **Facilitate Communication:** They provide a common language for the team and stakeholders to discuss features.
+  - **Guide Development:** They inform the creation of tasks and acceptance criteria for implementation.
+  - **Prioritize Work:** They allow the team to prioritize features based on user value and business impact.
+
+7. How do you handle changes to requirements during an ongoing Sprint?
+- In Scrum, once a Sprint has started, the scope should remain stable to allow the team to focus on delivering the committed work. However, if changes are necessary:
+  - **Assess the Impact:** Determine how the change affects the Sprint Goal and the team's capacity.
+  - **Consult the Product Owner:** Discuss the change with the Product Owner to decide whether it should be included in the current Sprint or deferred to a future one.
+  - **Adjust the Sprint Backlog:** If the change is approved, update the Sprint Backlog accordingly, possibly by removing lower-priority items to accommodate the new requirement.
+  - **Maintain Transparency:** Communicate the change and its implications to the team to ensure everyone is aligned.
+
+8. What are some common challenges teams face when implementing Scrum, and how can they be addressed?
+- Common challenges include:
+  - **Resistance to Change:** Team members accustomed to traditional methods may resist adopting Scrum. This can be addressed through training, coaching, and demonstrating the benefits of Scrum.
+  - **Lack of Understanding:** Misunderstanding Scrum roles and practices can lead to ineffective implementation. Providing clear guidance and continuous education helps mitigate this.
+  - **Poor Communication:** Ineffective communication can hinder collaboration. Encouraging open communication and regular Scrum ceremonies can improve this.
+  - **Inadequate Product Backlog:** A poorly maintained Product Backlog can lead to confusion and misaligned priorities. Regular backlog grooming and close collaboration with the Product Owner can enhance backlog quality.
+  - **Incomplete Adoption:** Failing to fully adopt Scrum practices can limit its effectiveness. Ensuring commitment from all team members and stakeholders is crucial for successful implementation.
+
+9. Describe the purpose and typical activities of a Daily Stand-up meeting.
+- The Daily Stand-up, or Daily Scrum, is a short, time-boxed meeting (usually 15 minutes) held every day during a Sprint. Its purpose is to:
+  - **Synchronize Activities:** Team members share what they did yesterday, what they plan to do today, and identify any blockers.
+  - **Promote Transparency:** It provides visibility into each team member's progress and challenges.
+  - **Facilitate Quick Decision-Making:** Issues raised can be addressed promptly, ensuring the team stays on track.
+  - **Maintain Focus:** It helps the team remain aligned with the Sprint Goal and adjust plans as necessary.
+  Typical activities include each team member answering the three questions:
+  A. What did I accomplish yesterday,
+  B. What will I do today,
+  C. Are there any impediments in my way,
+
+10. How do you measure the success and effectiveness of an Agile project?
+- Success and effectiveness of an Agile project can be measured using various metrics and indicators, such as:
+  - **Customer Satisfaction:** Feedback from customers and stakeholders regarding the delivered product.
+  - **Velocity:** The amount of work a team completes during a Sprint, which helps in assessing productivity and forecasting.
+  - **Sprint Goal Achievement:** The degree to which the team meets the objectives set for each Sprint.
+  - **Quality Metrics:** Number of defects, code quality, and other quality indicators.
+  - **Team Satisfaction:** The morale and engagement level of the team members.
+  - **Time to Market:** The speed at which features are delivered to customers.
+  - **Adaptability:** The team’s ability to respond to changes and pivot when necessary.
+  - **Retention Rates:** For products, the rate at which users continue to use the product over time.
+Combining these metrics provides a comprehensive view of the project's health and the team's performance.
