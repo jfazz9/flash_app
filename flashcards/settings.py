@@ -28,7 +28,7 @@ SECRET_KEY = 'django-insecure-wwxa%i#3fif*jx=(cue76#1t!0v7(l)b-!*gb_6=mqx%r6fymw
 # SECURITY WARNING: don't run with debug turned on in production! 
 DEBUG = os.getenv('DEBUG', 'False') == 'True'
 
-ALLOWED_HOSTS = ['flashcards_app.herokuapp.com']
+ALLOWED_HOSTS = ['secret-taiga-06087.herokuapp.com', 'localhost']
 
 
 # Application definition
