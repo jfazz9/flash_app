@@ -28,7 +28,7 @@ SECRET_KEY = 'django-insecure-wwxa%i#3fif*jx=(cue76#1t!0v7(l)b-!*gb_6=mqx%r6fymw
 # SECURITY WARNING: don't run with debug turned on in production! 
 DEBUG = os.getenv('DEBUG', 'False') == 'True'
 
-ALLOWED_HOSTS = ['secret-taiga-06087.herokuapp.com', 'localhost']
+ALLOWED_HOSTS = ['flashapp.herokuapp.com', 'localhost']
 
 
 # Application definition
@@ -123,7 +123,7 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.0/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 # Default primary key field type
