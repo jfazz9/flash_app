@@ -10,7 +10,7 @@ from django.views.generic import (
 from django.db.models import Count
 from django.shortcuts import get_object_or_404, redirect, render
 from .models import Card, Topic, Flashcard
-from .forms import CardCheckForm, TopicForm, SignUpForm
+from .forms import CardCheckForm, TopicForm, UserCreationForm
 import random
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.decorators import login_required
@@ -18,7 +18,7 @@ from django.http import HttpResponseForbidden
 
 def signup(request):
     if request.method == 'POST':
-        form = SignUpForm(request.POST)
+        form = UserCreationForm(request.POST)
         if form.is_valid():
             user = form.save()
             username = form.cleaned_data.get('username')
@@ -27,7 +27,7 @@ def signup(request):
             login(request,user)
             return redirect('home')
     else:
-        form = SignUpForm()
+        form = UserCreationForm()
     return render(request, 'signup.html', {'form':form})
 
 def user_login(request):

@@ -92,18 +92,7 @@
 <body>
     <header>
         <h1>Flashcards App</h1>
-        <form method="GET" action="">
-            <label for="topic">Filter by Topic:</label>
-            <select name="topic" id="topic">
-                <option value="">All Topics</option> <!-- Default to show all topics -->
-                {% for topic in topics %}
-                    <option value="{{ topic.id }}" {% if request.GET.topic == topic.id|stringformat:"s" %}selected{% endif %}>
-                        {{ topic.name }}
-                    </option>
-                {% endfor %}
-            </select>
-            <button type="submit">Filter</button>
-        </form>
+        
         {% include "cards/navigation.html" %}
     </header>
     <main>
