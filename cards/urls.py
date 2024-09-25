@@ -2,41 +2,42 @@
 
 from django.urls import path
 from django.contrib.auth import views as auth_views
-from . import views
+from .views import *
 
 urlpatterns = [
     path(
         "",
-        views.CardListView.as_view(),
+        CardListView.as_view(),
         name="card-list"
     ),
+    path("", home, name="home"),
     path(
         "new",
-        views.CardCreateView.as_view(),
+        CardCreateView.as_view(),
         name="card-create"
     ),
     path(
         "edit/<int:pk>",
-        views.CardUpdateView.as_view(),
+        CardUpdateView.as_view(),
         name="card-update"),
     path(
         "box/<int:box_num>",
-        views.BoxView.as_view(),
+        BoxView.as_view(),
         name="box"),
     path(
         'topics/', 
-         views.TopicListView.as_view(), 
+         TopicListView.as_view(), 
          name='topic-list'),
     path(
         'card/<int:pk>/delete/', 
-        views.CardDeleteView.as_view(), 
+        CardDeleteView.as_view(), 
         name='card-delete'),
     path(
         'card/<int:pk>/submit-answer/',
-        views.submit_answer, 
+        submit_answer, 
         name='submit-answer'),
     path('signup/',
-         views.signup, 
+        signup, 
          name='signup'),
     path('login/',
          auth_views.LoginView.as_view(),
@@ -49,5 +50,6 @@ urlpatterns = [
          name='password_change'),
     path('password_change/done/', 
          auth_views.PasswordChangeDoneView.as_view(), 
-         name='password_change_done')
+         name='password_change_done'),
+    path('testpage/', test_page, name='test_page'),
 ]

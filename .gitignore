@@ -1,0 +1,31 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+
+# Django stuff:
+*.log
+*.pot
+*.pyc
+__pycache__/
+local_settings.py
+db.sqlite3
+
+# Virtualenv
+env/
+venv/
+.venv/
+
+# Static and media files
+staticfiles/
+media/
+
+# Heroku
+.heroku/
+
+# Conda environment
+flash_env/
+

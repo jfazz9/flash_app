@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <h2>Sign Up</h2>
+  
+  <!-- Signup Form -->
+  <form method="post">
+    {% csrf_token %}  <!-- Django's CSRF token for form security -->
+    {{ form.as_p }}   <!-- This will automatically render the form fields as paragraphs -->
+
+    <!-- Submit Button -->
+    <button type="submit">Sign Up</button>
+  </form>
+
+  <!-- Option to go to login page -->
+  <p>Already have an account? <a href="{% url 'login' %}">Log in here</a></p>
+
+{% endblock %}

@@ -1,0 +1,42 @@
+
+{% load cards_tags %}
+
+
+<nav>
+    <div class="nav-left">
+        <!-- Links to home and boxes -->
+         <div class="boxes-row">
+        <a href="{% url 'home' %}">Home</a>
+        {% boxes_as_links %}
+        </div>
+        
+        <!-- Dropdown placed inside a new div -->
+        <div class="dropdown-container">
+            <form method="GET" action="">
+                <label for="topic"><h4>Filter by Topic:</h4></label>
+                <select name="topic" id="topic">
+                    <option value="">All Topics</option> <!-- Default to show all topics -->
+                    {% for topic in topics %}
+                        <option value="{{ topic.id }}" {% if request.GET.topic == topic.id|stringformat:"s" %}selected{% endif %}>
+                            {{ topic.name }}
+                        </option>
+                    {% endfor %}
+                </select>
+                <button type="submit">Filter</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="nav-right">
+        <ul>
+            {% if user.is_authenticated %}
+                <li>Welcome, {{ user.username }}!</li>
+                <li><a href="{% url 'logout' %}">Logout</a></li>
+            {% else %}
+                <li><a href="{% url 'login' %}">Login</a></li>
+                <li><a href="{% url 'signup' %}">Sign Up</a></li>
+            {% endif %}
+        </ul>
+    </div>
+</nav>
+

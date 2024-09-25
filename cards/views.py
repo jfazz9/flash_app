@@ -10,28 +10,35 @@ from django.views.generic import (
 from django.db.models import Count
 from django.shortcuts import get_object_or_404, redirect, render
 from .models import Card, Topic, Flashcard
-from .forms import CardCheckForm, TopicForm, UserCreationForm
+from .forms import CardCheckForm, TopicForm, SignUpForm, UserCreationForm
 import random
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseForbidden
 
+def test_page(request):
+    return render(request, 'testpage.html')
+
+
+def home(request):
+    return render(request, 'home.html')
+
 def signup(request):
     if request.method == 'POST':
-        form = UserCreationForm(request.POST)
+        form = SignUpForm(request.POST)
         if form.is_valid():
             user = form.save()
-            username = form.cleaned_data.get('username')
-            password = form.cleaned_data.get('password1')
-            user = authenticate(username=username, password=password)
-            login(request,user)
+            login(request, user)
             return redirect('home')
     else:
-        form = UserCreationForm()
-    return render(request, 'signup.html', {'form':form})
+        form = SignUpForm()
+    context = {
+        "form":form
+        }
+    return render(request, 'registration/signup.html', context)
 
 def user_login(request):
-    return render(request, 'login.html')
+    return render(request, 'registration/login.html')
 
 
 def submit_answer(request, pk):
