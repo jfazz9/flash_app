@@ -82,15 +82,22 @@ WSGI_APPLICATION = 'flashcards.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
 
-DATABASES = {
-    'default': dj_database_url.config(
-        default=os.environ.get('DATABASE_URL')
-    )
-    }
+DATABASES = {}
 # Optional: Enable SSL for security
-DATABASES['default']['CONN_MAX_AGE'] = 500
-DATABASES['default']['OPTIONS'] = {'sslmode': 'require'}
 
+DATABASE_URL = os.environ.get('DATABASE_URL')
+if DATABASE_URL:
+    DATABASES['default'] = dj_database_url.config(default=DATABASE_URL)
+    DATABASES['default']['CONN_MAX_AGE'] = 500
+    DATABASES['default']['OPTIONS'] = {'sslmode': 'require'}
+else:
+    # Fallback to SQLite for local development
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',  # Ensure you point to the correct path for SQLite
+        }
+    }
 
 # Password validation
 # https://docs.djangoproject.com/en/4.0/ref/settings/#auth-password-validators
