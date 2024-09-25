@@ -87,6 +87,9 @@ DATABASES = {
         default=os.environ.get('DATABASE_URL')
     )
     }
+# Optional: Enable SSL for security
+DATABASES['default']['CONN_MAX_AGE'] = 500
+DATABASES['default']['OPTIONS'] = {'sslmode': 'require'}
 
 
 # Password validation

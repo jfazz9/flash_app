@@ -2,6 +2,8 @@
 from django import forms
 from django.shortcuts import get_object_or_404, redirect
 from .models import Topic, Card
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.models import User
 
 class TopicForm(forms.ModelForm):
     class Meta:
@@ -13,3 +15,10 @@ class CardCheckForm(forms.Form):
     solved = forms.BooleanField(required=False)
 
 
+class SignUpForm(UserCreationForm):
+    email = forms.EmailField()
+
+    class Meta:
+        model = User
+        fields = ['username', 'email', 'passrword1', 'password2']
+        

@@ -9,10 +9,29 @@ from django.views.generic import (
 )
 from django.db.models import Count
 from django.shortcuts import get_object_or_404, redirect, render
-from .models import Card, Topic
-from .forms import CardCheckForm, TopicForm
+from .models import Card, Topic, Flashcard
+from .forms import CardCheckForm, TopicForm, SignUpForm
 import random
+from django.contrib.auth import login, authenticate
+from django.contrib.auth.decorators import login_required
+from django.http import HttpResponseForbidden
 
+def signup(request):
+    if request.method == 'POST':
+        form = SignUpForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            username = form.cleaned_data.get('username')
+            password = form.cleaned_data.get('password1')
+            user = authenticate(username=username, password=password)
+            login(request,user)
+            return redirect('home')
+    else:
+        form = SignUpForm()
+    return render(request, 'signup.html', {'form':form})
+
+def user_login(request):
+    return render(request, 'login.html')
 
 
 def submit_answer(request, pk):
@@ -133,5 +152,16 @@ class BoxView(CardListView):
         return redirect(request.META.get("HTTP_REFERER"))
 
 
+'''filter views for user'''
+@login_required
+def user_flashcards(request):
+    user_flashcards = Flashcard.objects.filter(user=request.user)
+    return render(request, 'flashcards.html', {'flashcards':user_flashcards})
 
-    
+
+def delete_flashcard(request, flashcard_id):
+    flashcard = get_object_or_404(Flashcard, id=flashcard_id)
+    if flashcard.user != request.user:
+        return HttpResponseForbidden()  # Prevent the user from deleting another user's flashcard
+    flashcard.delete()
+    return redirect('user_flashcards')
