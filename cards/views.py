@@ -103,10 +103,14 @@ class CardUpdateView(CardCreateView, UpdateView):
     success_url = reverse_lazy("card-list")
 
     def get_object(self, queryset: None):
-        card = super().get_object(queryset)
-        if card.user != self.request.user:
-            raise Http404  # If the card doesn't belong to the logged-in user, raise a 404 error
-        return card
+        try:
+            card = super().get_object(queryset)
+            if card.user != self.request.user:
+                raise Http404  # Prevent other users from accessing cards they don't own
+            return card
+        except Card.DoesNotExist:
+            raise Http404("Card does not exist or you do not have permission to edit it.")
+
 
 class CardDeleteView(DeleteView):
     model = Card
