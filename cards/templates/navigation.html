@@ -30,7 +30,7 @@
     <div class="nav-right">
         <ul>
             {% if user.is_authenticated %}
-                <li>Welcome, {{ user.username }}!</li>
+                <li>Welcome, <a href="{% url 'profile' %}"></a>{{ user.username }}!</a></li>
                 <li><a href="{% url 'logout' %}">Logout</a></li>
             {% else %}
                 <li><a href="{% url 'login' %}">Login</a></li>

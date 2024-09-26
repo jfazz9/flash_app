@@ -2,31 +2,32 @@
 
 
 {% block content %}
-    {% if card %}
+    {% if form.instance.id %}
         <h2>✏️ Edit Card</h2>
     {% else %}
         <h2>✨ Create New Card</h2>
     {% endif %}
 
     <form method="post">
-
         {% csrf_token %}
-
         {{ form.as_p }}
-
         <input type="submit" value="Save Card">
-
     </form>
-    {% if card.id %}
+
+    {% if form.instance.id %}
         <a href="{% url 'card-delete' card.id %}" class="delete-button" role="button" >
             🗑️ Delete Card
         </a>
     {% endif %}
 
-    <a href="{% url 'card-list' %}">
-
-        Cancel
-
-    </a>
+    <a href="{% url 'home' %}">Cancel</a>
 
 {% endblock %}
+
+{% if messages %}
+<ul>
+    {% for message in messages %}
+        <li class="alert alert-success">{{ message }}</li>
+    {% endfor %}
+</ul>
+{% endif %}

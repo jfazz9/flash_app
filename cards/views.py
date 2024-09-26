@@ -14,11 +14,12 @@ from django.db.models import Count
 from django.shortcuts import get_object_or_404, redirect, render
 from .models import Card, Topic, Flashcard
 from .forms import CardCheckForm, TopicForm, SignUpForm, UserCreationForm
-import random
+from django.contrib import messages
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseForbidden, Http404
 from django.contrib.auth.mixins import LoginRequiredMixin
+import random
 
 
 class HomeView(TemplateView):
@@ -30,7 +31,11 @@ def signup(request):
         if form.is_valid():
             user = form.save()
             login(request, user)
+            messages.success(request, "Account created successfully!")
             return redirect('home')
+        else:
+            messages.error(request, "Signup failed. Please try again.")
+
     else:
         form = SignUpForm()
     context = {
@@ -63,8 +68,7 @@ class CardListView(LoginRequiredMixin, ListView):
         # Start with the base queryset (all cards)
         queryset = Card.objects.filter(user=self.request.user).order_by("box", "-date_created")
         # Get topic_id from the GET parameters (dropdown selection)
-        topic_id = self.request.GET.get('topic')
-        
+        topic_id = self.request.GET.get('topic')        
         # If a topic is selected, filter cards by that topic
         if topic_id:
             queryset = queryset.filter(topic__id=topic_id)
@@ -81,14 +85,16 @@ class CardListView(LoginRequiredMixin, ListView):
 
         return context
 
-class CardCreateView(CreateView):
+class CardCreateView(LoginRequiredMixin, CreateView):
     model = Card
     fields = ['question', 'answer', 'box', 'topic']
+    template_name = 'cards/card_form.html'
     success_url = reverse_lazy("card-create")
 
     def form_valid(self, form):
         # Assign the logged-in user to the card
         form.instance.user = self.request.user
+        messages.success(self.request, "Card successfully created!")
         return super().form_valid(form)
 
 class CardUpdateView(CardCreateView, UpdateView):
@@ -128,31 +134,30 @@ class TopicListView(ListView):
             topics = Topic.objects.all()  # Get all topics to re-display them in case of form error
             return render(request, self.template_name, {'topics': topics, 'form': form})
 
-class BoxView(CardListView):
+class BoxView(LoginRequiredMixin, CardListView):
     model = Card
     template_name = "cards/box.html"
     form_class = CardCheckForm
 
     def get_queryset(self):
-        queryset = Card.objects.filter(box=self.kwargs["box_num"], user=self.request.user)
+        self.queryset = Card.objects.filter(box=self.kwargs["box_num"], user=self.request.user)
         topic_id = self.request.GET.get('topic')
 
         if topic_id:
-            queryset = queryset.filter(topic__id=topic_id)
+            self.queryset = self.queryset.filter(topic__id=topic_id)
         
-        return queryset
+        return self.queryset
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["box_number"] = self.kwargs["box_num"]  # Current box number
         context["topics"] = Topic.objects.all()
         context['selected_topic'] = self.request.GET.get('topic')
-        context['boxes'] = Card.objects.values('box').annotate(card_count=Count('id')).order_by('box')
-        # If there are cards in the queryset, pick a random one to check
-        if self.object_list:
-            context["check_card"] = random.choice(self.object_list)
+        context['boxes'] = Card.objects.filter(user=self.request.user).values('box').annotate(card_count=Count('id')).order_by('box')
 
-        
+        # If there are cards in the queryset, pick a random one to check
+        if self.get_queryset().exists():
+            context["check_card"] = random.choice(self.get_queryset())
         return context
     
     def post(self, request, *args, **kwargs):
