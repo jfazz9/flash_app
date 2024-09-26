@@ -63,6 +63,8 @@ class CardListView(LoginRequiredMixin, ListView):
     model = Card
     template_name = 'cards/card_list.html'  # Ensure this points to your template
     context_object_name = 'cards'
+    login_url = reverse_lazy('signup')  # Redirect to signup page if not logged in
+    redirect_field_name = 'redirect_to'
 
     def get_queryset(self):
         # Start with the base queryset (all cards)
@@ -101,6 +103,8 @@ class CardUpdateView(CardCreateView, UpdateView):
     model = Card
     fields = ['question', 'answer', 'box', 'topic']
     success_url = reverse_lazy("card-list")
+    login_url = reverse_lazy('signup')  # Redirect to signup page if not logged in
+    redirect_field_name = 'redirect_to'
 
     def get_object(self, queryset: None):
         try:
@@ -173,7 +177,7 @@ class BoxView(CardListView):
 
 
 '''filter views for user'''
-@login_required
+@login_required(login_url=reverse_lazy('signup'))
 def user_flashcards(request):
     user_flashcards = Flashcard.objects.filter(user=request.user)
     return render(request, 'flashcards.html', {'flashcards':user_flashcards})
