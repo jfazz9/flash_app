@@ -134,7 +134,7 @@ class TopicListView(ListView):
             topics = Topic.objects.all()  # Get all topics to re-display them in case of form error
             return render(request, self.template_name, {'topics': topics, 'form': form})
 
-class BoxView(LoginRequiredMixin, CardListView):
+class BoxView(CardListView):
     model = Card
     template_name = "cards/box.html"
     form_class = CardCheckForm
@@ -155,9 +155,9 @@ class BoxView(LoginRequiredMixin, CardListView):
         context['selected_topic'] = self.request.GET.get('topic')
         context['boxes'] = Card.objects.filter(user=self.request.user).values('box').annotate(card_count=Count('id')).order_by('box')
 
-        # If there are cards in the queryset, pick a random one to check
-        if self.get_queryset().exists():
-            context["check_card"] = random.choice(self.get_queryset())
+        queryset = self.get_queryset()
+        if queryset.exists():
+            context["check_card"] = random.choice(queryset)
         return context
     
     def post(self, request, *args, **kwargs):
