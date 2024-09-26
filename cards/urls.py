@@ -49,12 +49,15 @@ urlpatterns = [
          auth_views.LoginView.as_view(),
          name='login'),
     path('logout/',
-         auth_views.LogoutView.as_view(),
+         auth_views.LogoutView.as_view(next_page='home'),
          name='logout'),
     path('password_change/', 
          auth_views.PasswordChangeView.as_view(), 
          name='password_change'),
     path('password_change/done/', 
          auth_views.PasswordChangeDoneView.as_view(), 
-         name='password_change_done')
+         name='password_change_done'),
+    path('accounts/profile/',
+         profile,
+         name='profile')
 ]

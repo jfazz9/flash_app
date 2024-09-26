@@ -20,12 +20,6 @@ from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseForbidden, Http404
 from django.contrib.auth.mixins import LoginRequiredMixin
 
-def test_page(request):
-    return render(request, 'testpage.html')
-
-
-def home(request):
-    return render(request, 'home.html')
 
 class HomeView(TemplateView):
     template_name = 'home.html'
@@ -182,3 +176,7 @@ def delete_flashcard(request, flashcard_id):
         return HttpResponseForbidden()  # Prevent the user from deleting another user's flashcard
     flashcard.delete()
     return redirect('user_flashcards')
+
+@login_required
+def profile(request):
+    return render(request, 'registration/profile.html')
