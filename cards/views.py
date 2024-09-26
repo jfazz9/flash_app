@@ -8,6 +8,7 @@ from django.views.generic import (
     CreateView,
     UpdateView,
     DeleteView,
+    TemplateView,
 )
 from django.db.models import Count
 from django.shortcuts import get_object_or_404, redirect, render
@@ -25,6 +26,9 @@ def test_page(request):
 
 def home(request):
     return render(request, 'home.html')
+
+class HomeView(TemplateView):
+    template_name = 'home.html'
 
 def signup(request):
     if request.method == 'POST':

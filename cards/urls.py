@@ -5,14 +5,19 @@ from django.contrib.auth import views as auth_views
 from .views import *
 
 urlpatterns = [
+        path(
+        '', 
+         HomeView.as_view(), 
+         name='home'
+    ),
     path(
-        "",
+        "cards/",
         CardListView.as_view(),
         name="card-list"
     ),
-    path("", home, name="home"),
+
     path(
-        "new",
+        "new/",
         CardCreateView.as_view(),
         name="card-create"
     ),
@@ -36,6 +41,7 @@ urlpatterns = [
         'card/<int:pk>/submit-answer/',
         submit_answer, 
         name='submit-answer'),
+    # Authentication
     path('signup/',
         signup, 
          name='signup'),
@@ -50,6 +56,5 @@ urlpatterns = [
          name='password_change'),
     path('password_change/done/', 
          auth_views.PasswordChangeDoneView.as_view(), 
-         name='password_change_done'),
-    path('testpage/', test_page, name='test_page'),
+         name='password_change_done')
 ]
