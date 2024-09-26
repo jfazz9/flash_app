@@ -1,5 +1,7 @@
 # cards/views.py
 
+from django.db.models.base import Model as Model
+from django.db.models.query import QuerySet
 from django.urls import reverse_lazy
 from django.views.generic import (
     ListView,
@@ -14,7 +16,8 @@ from .forms import CardCheckForm, TopicForm, SignUpForm, UserCreationForm
 import random
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponseForbidden
+from django.http import HttpResponseForbidden, Http404
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 def test_page(request):
     return render(request, 'testpage.html')
@@ -53,15 +56,14 @@ def submit_answer(request, pk):
         card.move(solved)
         return redirect(request.META.get('HTTP_REFERER', 'card-list'))
     
-class CardListView(ListView):
+class CardListView(LoginRequiredMixin, ListView):
     model = Card
     template_name = 'cards/card_list.html'  # Ensure this points to your template
     context_object_name = 'cards'
 
     def get_queryset(self):
         # Start with the base queryset (all cards)
-        queryset = Card.objects.all().order_by("box", "-date_created")
-        
+        queryset = Card.objects.filter(user=self.request.user).order_by("box", "-date_created")
         # Get topic_id from the GET parameters (dropdown selection)
         topic_id = self.request.GET.get('topic')
         
@@ -70,14 +72,6 @@ class CardListView(ListView):
             queryset = queryset.filter(topic__id=topic_id)
         
         return queryset
-
-
-    # def get_queryset(self):
-    #     queryset = Card.objects.all()
-    #     topic_id = self.request.GET.get('topic')
-    #     if topic_id:
-    #         queryset = queryset.filter(topic__id=topic_id)
-    #     return queryset
 
 
     def get_context_data(self, **kwargs):
@@ -94,8 +88,21 @@ class CardCreateView(CreateView):
     fields = ['question', 'answer', 'box', 'topic']
     success_url = reverse_lazy("card-create")
 
+    def form_valid(self, form):
+        # Assign the logged-in user to the card
+        form.instance.user = self.request.user
+        return super().form_valid(form)
+
 class CardUpdateView(CardCreateView, UpdateView):
+    model = Card
+    fields = ['question', 'answer', 'box', 'topic']
     success_url = reverse_lazy("card-list")
+
+    def get_object(self, queryset: None):
+        card = super().get_object(queryset)
+        if card.user != self.request.user:
+            raise Http404  # If the card doesn't belong to the logged-in user, raise a 404 error
+        return card
 
 class CardDeleteView(DeleteView):
     model = Card
@@ -129,8 +136,7 @@ class BoxView(CardListView):
     form_class = CardCheckForm
 
     def get_queryset(self):
-        queryset = Card.objects.filter(box=self.kwargs["box_num"])
-
+        queryset = Card.objects.filter(box=self.kwargs["box_num"], user=self.request.user)
         topic_id = self.request.GET.get('topic')
 
         if topic_id:

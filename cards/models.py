@@ -19,6 +19,7 @@ class Card(models.Model):
     )
     topic = models.ForeignKey(Topic, on_delete=models.CASCADE)
     date_created = models.DateTimeField(auto_now_add=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.question
