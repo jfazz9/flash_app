@@ -22,7 +22,7 @@ urlpatterns = [
         name="card-create"
     ),
     path(
-        "edit/<int:pk>",
+        "card/edit/<int:pk>/",
         CardUpdateView.as_view(),
         name="card-update"),
     path(
