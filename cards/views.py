@@ -92,6 +92,7 @@ class CardCreateView(LoginRequiredMixin, CreateView):
     fields = ['question', 'answer', 'box', 'topic']
     template_name = 'cards/card_form.html'
     success_url = reverse_lazy("card-create")
+    
 
     def form_valid(self, form):
         # Assign the logged-in user to the card
@@ -100,23 +101,25 @@ class CardCreateView(LoginRequiredMixin, CreateView):
         return super().form_valid(form)
 
 
-class CardUpdateView(UpdateView):
+class CardUpdateView(LoginRequiredMixin, UpdateView):
     model = Card
     template_name = 'cards/card_form.html'  # Reuse the same form as create
     success_url = reverse_lazy("card-list")
+    login_url = reverse_lazy('signup')
 
     def get_object(self, queryset=None):
-        card = super().get_object(queryset)
-        # Ensure the card belongs to the logged-in user
-        if card.user != self.request.user:
-            raise Http404("You do not have permission to edit this card.")
-        return card
+        try:
+            card = Card.objects.get(pk=self.kwargs['pk'], user=self.request.user)
+            return card
+        except Card.DoesNotExist:
+            raise Http404("Card does not exist or you do not have permission to edit it.")
 
     def form_valid(self, form):
         messages.success(self.request, "Card successfully updated!")
         return super().form_valid(form)
 
     def form_invalid(self, form):
+        print(form.errors)  # Add this to see the form errors
         messages.error(self.request, "There was an error updating the card. Please try again.")
         return super().form_invalid(form)
     
