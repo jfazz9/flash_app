@@ -13,9 +13,9 @@ from django.views.generic import (
 from django.db.models import Count
 from django.shortcuts import get_object_or_404, redirect, render
 from .models import Card, Topic, Flashcard
-from .forms import CardCheckForm, TopicForm, SignUpForm, UserCreationForm
+from .forms import CardCheckForm, TopicForm, SignUpForm
 from django.contrib import messages
-from django.contrib.auth import login, authenticate
+from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseForbidden, Http404
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -23,7 +23,7 @@ import random
 
 
 class HomeView(TemplateView):
-    template_name = 'home.html'
+    template_name = 'cards/home.html'
 
 def signup(request):
     if request.method == 'POST':
@@ -41,59 +41,63 @@ def signup(request):
     context = {
         "form":form
         }
-    return render(request, 'registration/signup.html', context)
+    return render(request, 'cards/registration/signup.html', context)
 
 def user_login(request):
-    return render(request, 'registration/login.html')
-
+    return render(request, 'login.html')
 
 def submit_answer(request, pk):
     card = get_object_or_404(Card,pk=pk)
     if request.method == 'POST':
         user_answer = request.POST.get('user_answer', '').strip()
 
-        if user_answer.lower() == card.answer.lower():
+        if user_answer.lower() in card.answer.lower():
             solved = True
         else:
             solved = False
         card.move(solved)
         return redirect(request.META.get('HTTP_REFERER', 'card-list'))
-    
-class CardListView(LoginRequiredMixin, ListView):
+
+def get_user_box_counts(user):
+    """Returns the boxes and card counts for a specific user."""
+    return Card.objects.filter(user=user).values('box').annotate(card_count=Count('id')).order_by('box')
+
+
+class CardListView(ListView):
     model = Card
-    template_name = 'cards/card_list.html'  # Ensure this points to your template
+    template_name = 'cards/card_list.html'
     context_object_name = 'cards'
-    login_url = reverse_lazy('signup')  # Redirect to signup page if not logged in
-    redirect_field_name = 'redirect_to'
 
     def get_queryset(self):
-        # Start with the base queryset (all cards)
         queryset = Card.objects.filter(user=self.request.user).order_by("box", "-date_created")
-        # Get topic_id from the GET parameters (dropdown selection)
-        topic_id = self.request.GET.get('topic')        
-        # If a topic is selected, filter cards by that topic
+        topic_id = self.request.GET.get('topic')
+
         if topic_id:
             queryset = queryset.filter(topic__id=topic_id)
-        
+
         return queryset
 
-
     def get_context_data(self, **kwargs):
-        # Add the topics to the context for the dropdown
         context = super().get_context_data(**kwargs)
-        context['topics'] = Topic.objects.all()  # Pass all topics to the template
+        context['topics'] = Topic.objects.all()
         context['selected_topic'] = self.request.GET.get('topic')
-        context['boxes'] = Card.objects.values('box').annotate(card_count=Count('id')).order_by('box')
-
+        # Add the user-specific box counts
+        context['boxes'] = get_user_box_counts(self.request.user)
         return context
 
-class CardCreateView(LoginRequiredMixin, CreateView):
+
+class CardCreateView(LoginRequiredMixin,CreateView):
     model = Card
     fields = ['question', 'answer', 'box', 'topic']
     template_name = 'cards/card_form.html'
     success_url = reverse_lazy("card-create")
+    login_url = reverse_lazy('login')
     
-
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['user'] = self.request.user  # Pass the user to the form
+        return kwargs
+    
     def form_valid(self, form):
         # Assign the logged-in user to the card
         form.instance.user = self.request.user
@@ -101,19 +105,19 @@ class CardCreateView(LoginRequiredMixin, CreateView):
         return super().form_valid(form)
 
 
-class CardUpdateView(LoginRequiredMixin, UpdateView):
+class CardUpdateView(CardCreateView, UpdateView):
     model = Card
-    template_name = 'cards/card_form.html'  # Reuse the same form as create
     success_url = reverse_lazy("card-list")
-    login_url = reverse_lazy('signup')
 
     def get_object(self, queryset=None):
-        try:
-            card = Card.objects.get(pk=self.kwargs['pk'], user=self.request.user)
-            return card
-        except Card.DoesNotExist:
-            raise Http404("Card does not exist or you do not have permission to edit it.")
+        card = get_object_or_404(Card, pk=self.kwargs['pk'], user=self.request.user)
+        return card
 
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['user'] = self.request.user  # Pass the user to the form
+        return kwargs
+    
     def form_valid(self, form):
         messages.success(self.request, "Card successfully updated!")
         return super().form_valid(form)
@@ -123,31 +127,10 @@ class CardUpdateView(LoginRequiredMixin, UpdateView):
         messages.error(self.request, "There was an error updating the card. Please try again.")
         return super().form_invalid(form)
     
-class CardDeleteView(DeleteView):
+class CardDeleteView(LoginRequiredMixin, DeleteView):
     model = Card
     success_url = reverse_lazy("card-list")
     template_name = 'cards/card_confirm_delete.html'
-
-class TopicListView(ListView):
-    model = Topic
-    template_name = 'topics/topic_list.html' 
-    context_object_name = 'topics'
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        # Add an empty form to the context for adding topics
-        context['form'] = TopicForm()
-        return context
-
-    def post(self, request, *args, **kwargs):
-        # Handle the POST request for adding a new topic
-        form = TopicForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect('topic-list')  # Redirect to the same page after adding the topic
-        else:
-            topics = Topic.objects.all()  # Get all topics to re-display them in case of form error
-            return render(request, self.template_name, {'topics': topics, 'form': form})
 
 class BoxView(CardListView):
     model = Card
@@ -155,32 +138,61 @@ class BoxView(CardListView):
     form_class = CardCheckForm
 
     def get_queryset(self):
-        self.queryset = Card.objects.filter(box=self.kwargs["box_num"], user=self.request.user)
+        queryset = Card.objects.filter(box=self.kwargs["box_num"], user=self.request.user)
         topic_id = self.request.GET.get('topic')
 
         if topic_id:
-            self.queryset = self.queryset.filter(topic__id=topic_id)
-        
-        return self.queryset
+            queryset = queryset.filter(topic__id=topic_id)
+
+        return queryset
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["box_number"] = self.kwargs["box_num"]  # Current box number
         context["topics"] = Topic.objects.all()
         context['selected_topic'] = self.request.GET.get('topic')
-        context['boxes'] = Card.objects.filter(user=self.request.user).values('box').annotate(card_count=Count('id')).order_by('box')
+        # Use the utility function to get user-specific box counts
+        context['boxes'] = get_user_box_counts(self.request.user)
 
+        # Randomly select a card to check
         queryset = self.get_queryset()
         if queryset.exists():
             context["check_card"] = random.choice(queryset)
         return context
-    
+
     def post(self, request, *args, **kwargs):
         form = self.form_class(request.POST)
         if form.is_valid():
             card = get_object_or_404(Card, id=form.cleaned_data["card_id"])
             card.move(form.cleaned_data["solved"])
         return redirect(request.META.get("HTTP_REFERER"))
+
+class TopicListView(ListView):
+    model = Topic
+    template_name = 'topics/topic_list.html' 
+    context_object_name = 'topics'
+
+    def get_queryset(self):
+        return Topic.objects.filter(user=self.request.user)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        # Add an empty form to the context for adding topics
+        context['topics'] = Topic.objects.filter(user=self.request.user)
+        context['form'] = TopicForm()
+        return context
+
+    def post(self, request, *args, **kwargs):
+        # Handle the POST request for adding a new topic
+        form = TopicForm(request.POST)
+        if form.is_valid():
+            topic = form.save(commit=False)
+            topic.user = request.user
+            topic.save()
+            return redirect('topic-list')  # Redirect to the same page after adding the topic
+        else:
+            topics = Topic.objects.filter(user=request.user)  # Get all topics to re-display them in case of form error
+            return render(request, self.template_name, {'topics': topics, 'form': form})
 
 
 '''filter views for user'''
@@ -199,4 +211,4 @@ def delete_flashcard(request, flashcard_id):
 
 @login_required
 def profile(request):
-    return render(request, 'registration/profile.html')
+    return render(request, 'cards/registration/profile.html')

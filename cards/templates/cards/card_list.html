@@ -1,5 +1,5 @@
 <!-- cards/templates/cards/card_list.html -->
-{% extends "base.html" %}
+{% extends "cards/base.html" %}
 {% load humanize %}
 
 {% block content %}
@@ -17,13 +17,17 @@
     </a>
 
     <!-- Display the filtered card list -->
-    {% for card in cards %}
-        {% ifchanged %}
-            <h3>🗃 {{ card.box | ordinal }} Box</h3>
-        {% endifchanged %}
-        {% include "cards/card.html" %}
-    {% empty %}
-        <p>No cards available for this topic.</p>
-    {% endfor %}
+    {% if user.is_authenticated %}
+        {% for card in cards %}
+            {% ifchanged %}
+                <h3>🗃 {{ card.box | ordinal }} Box</h3>
+            {% endifchanged %}
+            {% include "cards/card.html" %}
+        {% empty %}
+            <p>No cards available for this topic.</p>
+        {% endfor %}
+    {% else %}
+        <p>Please <a href="{% url 'login' %}">login</a> to view your cards.</p>
+    {% endif %} 
 
 {% endblock content %}

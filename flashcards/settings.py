@@ -27,7 +27,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-wwxa%i#3fif*jx=(cue76#1t!0v7(l)b-!*gb_6=mqx%r6fymw'
 
 # SECURITY WARNING: don't run with debug turned on in production! 
-DEBUG = os.getenv('DEBUG', 'False') == 'True'
+DEBUG = 'True' #os.getenv('DEBUG', 'False') == True
 
 ALLOWED_HOSTS = ['flashapp.herokuapp.com', 'localhost']
 
@@ -59,6 +59,7 @@ MIDDLEWARE = [
 STATICFILES_STORAGE = [
     'whitenoise.storage.CompressedManifestStaticFilesStorage'
 ]
+
 ROOT_URLCONF = 'flashcards.urls'
 
 TEMPLATES = [
@@ -135,6 +136,9 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.0/howto/static-files/
 
 STATIC_URL = '/static/'
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'cards', 'static'),  # Ensure this points to the correct location
+]
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 # Default primary key field type
@@ -144,6 +148,6 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 LOGOUT_REDIRECT_URL = '/'
 LOGIN_REDIRECT_URL = '/'
-LOGIN_URL = reverse_lazy('signup') 
+LOGIN_URL = 'login' 
 
 django_heroku.settings(locals())
