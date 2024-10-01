@@ -13,7 +13,7 @@ from django.views.generic import (
 from django.db.models import Count
 from django.shortcuts import get_object_or_404, redirect, render
 from .models import Card, Topic, Flashcard
-from .forms import CardCheckForm, TopicForm, SignUpForm
+from .forms import CardCheckForm, TopicForm, SignUpForm, CardForm
 from django.contrib import messages
 from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required
@@ -62,8 +62,7 @@ def get_user_box_counts(user):
     """Returns the boxes and card counts for a specific user."""
     return Card.objects.filter(user=user).values('box').annotate(card_count=Count('id')).order_by('box')
 
-
-class CardListView(ListView):
+class CardListView(LoginRequiredMixin, ListView):
     model = Card
     template_name = 'cards/card_list.html'
     context_object_name = 'cards'
@@ -88,7 +87,7 @@ class CardListView(ListView):
 
 class CardCreateView(LoginRequiredMixin,CreateView):
     model = Card
-    fields = ['question', 'answer', 'box', 'topic']
+    form_class = CardForm
     template_name = 'cards/card_form.html'
     success_url = reverse_lazy("card-create")
     login_url = reverse_lazy('login')
@@ -106,7 +105,6 @@ class CardCreateView(LoginRequiredMixin,CreateView):
 
 
 class CardUpdateView(CardCreateView, UpdateView):
-    model = Card
     success_url = reverse_lazy("card-list")
 
     def get_object(self, queryset=None):
@@ -132,32 +130,32 @@ class CardDeleteView(LoginRequiredMixin, DeleteView):
     success_url = reverse_lazy("card-list")
     template_name = 'cards/card_confirm_delete.html'
 
-class BoxView(CardListView):
+class BoxView(LoginRequiredMixin, ListView):
     model = Card
     template_name = "cards/box.html"
     form_class = CardCheckForm
+    login_url = reverse_lazy('login')
 
     def get_queryset(self):
-        queryset = Card.objects.filter(box=self.kwargs["box_num"], user=self.request.user)
+        self.queryset = Card.objects.filter(box=self.kwargs["box_num"], user=self.request.user)
         topic_id = self.request.GET.get('topic')
 
         if topic_id:
-            queryset = queryset.filter(topic__id=topic_id)
-
-        return queryset
+            self.queryset = self.queryset.filter(topic__id=topic_id)
+        
+        return self.queryset
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["box_number"] = self.kwargs["box_num"]  # Current box number
-        context["topics"] = Topic.objects.all()
+        context["box_number"] = self.kwargs["box_num"]
+        context["topics"] = Topic.objects.filter(user=self.request.user)
         context['selected_topic'] = self.request.GET.get('topic')
-        # Use the utility function to get user-specific box counts
-        context['boxes'] = get_user_box_counts(self.request.user)
+        context['boxes'] = Card.objects.filter(user=self.request.user)
 
-        # Randomly select a card to check
         queryset = self.get_queryset()
         if queryset.exists():
             context["check_card"] = random.choice(queryset)
+        context["form"] = self.form_class()  # Initialize the form in the context
         return context
 
     def post(self, request, *args, **kwargs):
@@ -167,9 +165,9 @@ class BoxView(CardListView):
             card.move(form.cleaned_data["solved"])
         return redirect(request.META.get("HTTP_REFERER"))
 
-class TopicListView(ListView):
+class TopicListView(LoginRequiredMixin, ListView):
     model = Topic
-    template_name = 'topics/topic_list.html' 
+    template_name = 'topics/topic_list.html'
     context_object_name = 'topics'
 
     def get_queryset(self):
@@ -177,22 +175,20 @@ class TopicListView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        # Add an empty form to the context for adding topics
-        context['topics'] = Topic.objects.filter(user=self.request.user)
-        context['form'] = TopicForm()
+        context['form'] = TopicForm()  # Form to add a new topic
         return context
 
     def post(self, request, *args, **kwargs):
-        # Handle the POST request for adding a new topic
         form = TopicForm(request.POST)
         if form.is_valid():
             topic = form.save(commit=False)
             topic.user = request.user
             topic.save()
-            return redirect('topic-list')  # Redirect to the same page after adding the topic
+            return redirect('topic-list')
         else:
-            topics = Topic.objects.filter(user=request.user)  # Get all topics to re-display them in case of form error
-            return render(request, self.template_name, {'topics': topics, 'form': form})
+            # Handle invalid form submission, re-render the template with form errors
+            return self.get(request)  # Re-render with the original GET method to display errors
+
 
 
 '''filter views for user'''

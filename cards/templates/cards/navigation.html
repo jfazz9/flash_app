@@ -5,10 +5,15 @@
 <nav>
     <div class="nav-left">
         <!-- Links to home and boxes -->
-         <div class="boxes-row">
-        <a href="{% url 'home' %}">Home</a>
-        {% boxes_as_links %}
-        </div>
+        {% if user.is_authenticated %}
+            <div class="boxes-row">
+            <a href="{% url 'home' %}">Home</a>
+            
+            {% boxes_as_links %}
+            </div>
+        {% else %}
+            <p>login to view your boxes</p>
+        {% endif %}
         
         <!-- Dropdown placed inside a new div -->
         <div class="dropdown-container">

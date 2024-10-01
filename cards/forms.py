@@ -20,7 +20,7 @@ class CardForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         user = kwargs.pop('user', None)  # Handle the 'user' argument safely
-        super(CardForm, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         # If the user is provided, filter the topics by that user
         if user:
             self.fields['topic'].queryset = Topic.objects.filter(user=user)

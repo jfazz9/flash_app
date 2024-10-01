@@ -1,8 +1,8 @@
 {% load humanize %}
+
+
 {% for box in boxes %}
-    {% if box.box %}
-        <a href="{% url 'box' box_num=box.box %}?topic={{ selected_topic }}">
-            🗃 {{ box.box | ordinal }} Box <mark>{{ box.card_count }}</mark>
-        </a>
-    {% endif %}
+    <a href="{% url 'box' box_num=box.number %}">
+        🗃 {{ box.number | ordinal }} Box <mark>{{ box.card_count }}</mark>
+    </a>
 {% endfor %}

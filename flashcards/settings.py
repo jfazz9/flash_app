@@ -149,5 +149,5 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 LOGOUT_REDIRECT_URL = '/'
 LOGIN_REDIRECT_URL = '/'
 LOGIN_URL = 'login' 
-
+SESSION_ENGINE = 'django.contrib.sessions.backends.db'
 django_heroku.settings(locals())
