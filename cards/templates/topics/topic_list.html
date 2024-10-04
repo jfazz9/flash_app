@@ -2,13 +2,21 @@
 
 {% block content %}
     <h2>Topics</h2>
+
+    <div class="action-section text-center"></div>
+        <a href="{% url 'card-list' %}" class="button">View, Edit or Delete card</a>
+        <a href="{% url 'card-create' %}" class="button">Create a New Card</a>
+      </div>
     
     <!-- List of current topics -->
-    <ul>
-        {% for topic in topics %}
-            <li>{{ topic.name }}</li>
-        {% endfor %}
-    </ul>
+    <div class="topics-container">
+        <h4 class="text-center">My Topics</h4>
+        <ul>
+            {% for topic in topics %}
+                <li>{{ topic.name }}</li>
+            {% endfor %}
+        </ul>
+    </div>
 
     <!-- Form to add a new topic -->
     <h3>Add a New Topic</h3>

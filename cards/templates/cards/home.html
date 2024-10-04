@@ -1,9 +1,37 @@
-<!-- cards/templates/cards/home.html -->
-
 {% extends "cards/base.html" %}
 
 {% block content %}
-<h1>Welcome to the Flashcards App</h1>
-<p>Create, view, and edit your flashcards</p>
-<a href="{% url 'card-list' %}">View All Cards</a>
+  <div class="container">
+    
+    <h1 class="text-center">Welcome to the Flashcards App</h1>
+
+    <div class="action-section text-center"></div>
+        <a href="{% url 'card-list' %}" class="button">View, Edit or Delete card</a>
+        <a href="{% url 'card-create' %}" class="button">Create a New Card</a>
+        <a href="{% url 'topic-list' %}" class="button">Add a New Topic</a>
+      </div>
+
+    <div class="info-section">
+      <h3 class="text-center">Create, view, and manage your flashcards easily</h3>
+      <p class="text-center">
+        To create a flashcard, you must <b>first add a topic.</b> Once a topic has been added, you can create a new flashcard and attach it to the relevant topic. 
+      </p>
+    </div>
+
+    <!-- Center the buttons in the middle -->
+
+
+    <div class="how-it-works-section">
+      <h3 class="text-center">How It Works?</h3>
+      <p>
+        Flashcards are a powerful tool for learning and memorisation. The process is simple:</p> 
+        <p>You start with flashcards in Box 1. When you know the answer to a flashcard, it moves up to the next box (e.g., Box 2). 
+        The goal is to move flashcards through the boxes until they reach Box 5.
+      </p>
+      <p>
+        If you answer a flashcard incorrectly at any point, the card moves back to Box 1, giving you another chance to study it. 
+        This method helps reinforce information you are struggling with, while moving cards you're confident about up to the highest level.
+      </p>
+    </div>
+  </div>
 {% endblock %}

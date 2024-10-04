@@ -78,7 +78,7 @@ class CardListView(LoginRequiredMixin, ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['topics'] = Topic.objects.all()
+        context['topics'] = Topic.objects.filter(user=self.request.user)
         context['selected_topic'] = self.request.GET.get('topic')
         # Add the user-specific box counts
         context['boxes'] = get_user_box_counts(self.request.user)
