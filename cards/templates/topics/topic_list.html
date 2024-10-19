@@ -25,4 +25,18 @@
         {{ form.as_p }}  <!-- Renders the form fields -->
         <button type="submit">➕ Add Topic</button>
     </form>
+
+    <h3>Delete an Existing Topic</h3>
+    <p>deleting a topic will delete all questions in that topic</p>
+    <form method="post" action="{% url 'manage-topics' %}">
+        {% csrf_token %}
+        <label for="topic">Choose a topic to delete:</label>
+        <select name="topic" id="topic" class="form-control">
+            {% for topic in topics %}
+                <option value="{{ topic.id }}">{{ topic.name }}</option>
+            {% endfor %}
+        </select>
+        <button type="submit" class="btn btn-danger mt-3">Delete Topic</button>
+    </form>
+
 {% endblock %}

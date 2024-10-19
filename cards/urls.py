@@ -21,4 +21,7 @@ urlpatterns = [
     path('password_change/', auth_views.PasswordChangeView.as_view(), name='password_change'),
     path('password_change/done/', auth_views.PasswordChangeDoneView.as_view(), name='password_change_done'),
     path('accounts/profile/', profile, name='profile'),
+    path('import/', import_flashcards, name='import-flashcards'),
+    path('topic/<int:pk>/delete/', TopicDelete.as_view(), name='topic-delete'),
+    path('topics/manage/', manage_topics, name='manage-topics'),
 ]

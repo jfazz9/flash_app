@@ -1,0 +1,16 @@
+{% extends 'cards/base.html' %}
+
+{% block content %}
+  <h2>Import Flashcards</h2>
+
+  {% if error %}
+    <p style="color:red;">{{ error }}</p>
+  {% endif %}
+
+  <form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Upload</button>
+  </form>
+
+{% endblock %}

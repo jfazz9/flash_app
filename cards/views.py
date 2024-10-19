@@ -13,13 +13,13 @@ from django.views.generic import (
 from django.db.models import Count
 from django.shortcuts import get_object_or_404, redirect, render
 from .models import Card, Topic, Flashcard
-from .forms import CardCheckForm, TopicForm, SignUpForm, CardForm
+from .forms import CardCheckForm, TopicForm, SignUpForm, CardForm, FlashcardImportForm
 from django.contrib import messages
 from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseForbidden, Http404
 from django.contrib.auth.mixins import LoginRequiredMixin
-import random
+import random, re
 
 
 class HomeView(TemplateView):
@@ -189,6 +189,24 @@ class TopicListView(LoginRequiredMixin, ListView):
             # Handle invalid form submission, re-render the template with form errors
             return self.get(request)  # Re-render with the original GET method to display errors
 
+class TopicDelete(LoginRequiredMixin, DeleteView):
+    model = Topic  # You can use the Topic model
+    template_name = 'cards/topic_confirm_delete.html'
+    success_url = reverse_lazy('flashcards')  # Redirect after successful deletion
+
+    def get_queryset(self):
+        # Ensure the user can only delete topics they own
+        return Topic.objects.filter(user=self.request.user)
+
+    def delete(self, request, *args, **kwargs):
+        # Override the delete method to delete related Cards first
+        topic = self.get_object()
+
+        # Delete all Cards associated with this Topic for the logged-in user
+        Card.objects.filter(topic=topic, user=self.request.user).delete()
+
+        # Optionally, delete the topic itself
+        return super().delete(request, *args, **kwargs)
 
 
 '''filter views for user'''
@@ -208,3 +226,78 @@ def delete_flashcard(request, flashcard_id):
 @login_required
 def profile(request):
     return render(request, 'cards/registration/profile.html')
+
+@login_required
+def import_flashcards(request):
+    if request.method == 'POST':
+        form = FlashcardImportForm(request.POST, request.FILES)
+        if form.is_valid():
+            file = request.FILES['file']
+            topic_name = form.cleaned_data['topic_name']
+
+            # Find or create the topic by name and associate it with the logged-in user
+            topic, created = Topic.objects.get_or_create(
+                name=topic_name,
+                defaults={'user': request.user}
+            )
+
+            try:
+                # Read and decode the uploaded file
+                text = file.read().decode('utf-8')
+
+                # Regex pattern to match questions and answers
+                pattern = r'(\d+\.\s.*?\?)\s*(-\s.*?)(?=\d+\.|$)'
+                matches = re.findall(pattern, text, re.DOTALL)
+
+                # Iterate over matches and save them as flashcards
+                for i, (question, answer) in enumerate(matches, 1):
+                    question = question.strip()
+                    answer = answer.strip().lstrip('-').strip()
+
+                        # Create and save the Card object
+                    Card.objects.create(
+                        user=request.user,
+                        question=question,
+                        answer=answer,
+                        box=1,
+                        topic=topic
+                    )
+
+                return redirect('home')
+
+            except Exception as e:
+                return render(request, 'cards/import.html', {'form': form, 'error': f'Error processing file: {e}'})
+    else:
+        form = FlashcardImportForm()
+
+    return render(request, 'cards/import.html', {'form': form})
+
+@login_required
+def manage_topics(request):
+    if request.method == 'POST':
+        # Check if the request is for topic deletion
+        if 'topic' in request.POST:  # This indicates that the deletion form was submitted
+            topic_id = request.POST.get('topic')
+            topic = get_object_or_404(Topic, id=topic_id, user=request.user)
+            
+            # Delete all Cards related to this Topic for the current user
+            Card.objects.filter(topic=topic, user=request.user).delete()
+
+            # Optionally, delete the topic itself
+            topic.delete()
+
+            return redirect('topic-list')  # Redirect to refresh the page after deletion
+
+        # If not a delete request, it must be a topic creation request
+        form = TopicForm(request.POST)
+        if form.is_valid():
+            topic = form.save(commit=False)
+            topic.user = request.user  # Assign the logged-in user
+            topic.save()
+            return redirect('manage-topics')
+    else:
+        form = TopicForm()
+
+    # Fetch all topics for the logged-in user
+    topics = Topic.objects.filter(user=request.user)
+    return render(request, 'topics/manage_topics.html', {'form': form, 'topics': topics})

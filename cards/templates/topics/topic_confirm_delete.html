@@ -1,0 +1,13 @@
+{% extends 'cards/base.html' %}
+
+{% block content %}
+  <h2>Delete All Flashcards for {{ object.name }}?</h2>
+
+  <p>Are you sure you want to delete all flashcards related to the topic "{{ object.name }}"?</p>
+  
+  <form method="POST">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-danger">Delete</button>
+    <a href="{% url 'flashcards' %}" class="btn btn-secondary">Cancel</a>
+  </form>
+{% endblock %}
