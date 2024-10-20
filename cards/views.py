@@ -19,8 +19,7 @@ from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseForbidden, Http404
 from django.contrib.auth.mixins import LoginRequiredMixin
-import random, re
-
+import random, csv
 
 class HomeView(TemplateView):
     template_name = 'cards/home.html'
@@ -242,28 +241,27 @@ def import_flashcards(request):
             )
 
             try:
-                # Read and decode the uploaded file
-                text = file.read().decode('utf-8')
+                # Read the CSV file
+                decoded_file = file.read().decode('utf-8').splitlines()
+                reader = csv.reader(decoded_file)
+                
+                # Skip the header row if your CSV has headers (Question, Answer)
+                next(reader, None) 
 
-                # Regex pattern to match questions and answers
-                pattern = r'(\d+\.\s.*?\?)\s*(-\s.*?)(?=\d+\.|$)'
-                matches = re.findall(pattern, text, re.DOTALL)
+                # Process each row in the CSV file
+                for row in reader:
+                    question, answer = row[0], row[1]
 
-                # Iterate over matches and save them as flashcards
-                for i, (question, answer) in enumerate(matches, 1):
-                    question = question.strip()
-                    answer = answer.strip().lstrip('-').strip()
-
-                        # Create and save the Card object
+                    # Create and save the Card object with default box=1 and the topic
                     Card.objects.create(
                         user=request.user,
-                        question=question,
-                        answer=answer,
+                        question=question.strip(),
+                        answer=answer.strip(),
                         box=1,
                         topic=topic
                     )
 
-                return redirect('home')
+                return redirect('flashcards')  # Redirect to the flashcard list after successful import
 
             except Exception as e:
                 return render(request, 'cards/import.html', {'form': form, 'error': f'Error processing file: {e}'})
