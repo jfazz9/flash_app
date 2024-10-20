@@ -12,7 +12,7 @@ class Topic(models.Model):
         return self.name
 
 class Card(models.Model):
-    question = models.CharField(max_length=100)
+    question = models.CharField(max_length=500)
     answer = models.CharField(max_length=500)
     box = models.IntegerField(
         choices=zip(BOXES, BOXES),
