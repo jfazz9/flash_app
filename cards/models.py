@@ -13,7 +13,7 @@ class Topic(models.Model):
 
 class Card(models.Model):
     question = models.CharField(max_length=500)
-    answer = models.CharField(max_length=500)
+    answer = models.CharField(max_length=1000)
     box = models.IntegerField(
         choices=zip(BOXES, BOXES),
         default=BOXES[0],
@@ -34,7 +34,7 @@ class Card(models.Model):
 
 class Flashcard(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    question = models.CharField(max_length=255)
+    question = models.CharField(max_length=500)
     answer = models.TextField()
     date_created = models.DateTimeField(auto_now_add=True)
 

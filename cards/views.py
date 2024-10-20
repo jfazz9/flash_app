@@ -261,7 +261,7 @@ def import_flashcards(request):
                         topic=topic
                     )
 
-                return redirect('flashcards')  # Redirect to the flashcard list after successful import
+                return redirect('home')  # Redirect to the flashcard list after successful import
 
             except Exception as e:
                 return render(request, 'cards/import.html', {'form': form, 'error': f'Error processing file: {e}'})
